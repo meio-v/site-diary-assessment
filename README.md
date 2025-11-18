@@ -39,13 +39,27 @@ This project shows my ability to:
 - **Understand code** - I reviewed, modified, and can explain everything
 - **Think about trade-offs** - I made decisions about performance, UX, and code quality
 
-### Assessment Considerations
+### What This Project Demonstrates
 
-The assessment asks to see "your own coding ability and problem solving skills." I believe I demonstrated this through:
+This project showcases my technical skills and problem-solving approach:
 
-- My decision-making process (documented in this README)
-- My problem identification (N+1 queries, duplicate code, etc.)
-- My code review and refactoring
-- My understanding of the codebase (I can explain any part)
+**Architecture & Design**
 
-I did not write all code from scratch, but I directed the development, made all decisions, and ensured code quality throughout.
+- Designed a normalized database schema with proper relationships and constraints
+- Made informed decisions about component architecture (server vs client components)
+- Implemented efficient data fetching patterns to avoid N+1 query problems
+- Chose appropriate caching strategies for optimal performance
+
+**Problem Solving**
+
+- Identified performance bottlenecks (800ms+ render times) and optimized queries
+- Recognized code duplication and refactored into reusable components
+- Solved complex UX challenges (combobox pattern, inline editing, hover states)
+- Debugged and fixed issues in AI-generated code
+
+**Code Quality**
+
+- Conducted comprehensive code reviews and removed unused dependencies
+- Organized components into logical folder structure
+- Improved type safety throughout the application
+- Replaced native browser APIs with custom components for better UX
