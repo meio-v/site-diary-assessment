@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## AI-Assisted Development
 
-## Getting Started
+### Tools Used
 
-First, run the development server:
+I used **Cursor AI** (powered by Claude) extensively throughout this project. The assessment explicitly encourages AI use, and I want to be transparent about how I used it.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### How I Used AI
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Code Generation**: AI generated most of the initial code based on my requirements. However, I:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Provided clear specifications and requirements
+- Reviewed all generated code for correctness
+- Refactored and improved AI suggestions
+- Fixed bugs that AI-generated code introduced
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Problem Solving**: When I encountered issues, I:
 
-## Learn More
+- Identified the problem (e.g., N+1 queries causing slow renders)
+- Asked AI for potential solutions
+- Evaluated multiple approaches
+- Chose the best solution and implemented it
+- Tested and verified the fix
 
-To learn more about Next.js, take a look at the following resources:
+**Architecture Decisions**: All major decisions were mine:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Chose Next.js 16 with App Router
+- Designed normalized database schema
+- Decided on component architecture (server vs client components)
+- Made UX decisions (inline editing, hover actions, combobox pattern)
+- Chose caching strategy (no cache on list, 30s on detail pages)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### What This Demonstrates
 
-## Deploy on Vercel
+This project shows my ability to:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Work with modern development tools** - AI is part of the ecosystem
+- **Make technical decisions** - I chose the architecture and patterns
+- **Solve problems systematically** - I identified issues and directed solutions
+- **Understand code** - I reviewed, modified, and can explain everything
+- **Think about trade-offs** - I made decisions about performance, UX, and code quality
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Assessment Considerations
+
+The assessment asks to see "your own coding ability and problem solving skills." I believe I demonstrated this through:
+
+- My decision-making process (documented in this README)
+- My problem identification (N+1 queries, duplicate code, etc.)
+- My code review and refactoring
+- My understanding of the codebase (I can explain any part)
+
+I did not write all code from scratch, but I directed the development, made all decisions, and ensured code quality throughout.
