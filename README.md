@@ -74,6 +74,7 @@ npm start
 This project is configured for deployment on Vercel. The app uses Next.js 15.1.3 (downgraded from 16.0.3) to avoid Turbopack build errors in production. Environment variables (`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`) must be configured in the Vercel project settings. The build process uses webpack instead of Turbopack for reliable production builds. To deploy, connect your GitHub repository to Vercel or use the Vercel CLI (`vercel --prod`).
 
 ## Schema Design
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/5e7d83ea-8676-4d89-8f02-8b7dd68971ea" />
 
 The project was started by designing the schema:
 
