@@ -105,8 +105,13 @@ To achieve the schema, the following PostgreSQL tables were generated:
   - `useDiaryItems` - Generic hook for fetching diary-related items (visitors, incidents) with CRUD operations
   - `useIncidents / useVisitors` - Implementations of `useDiaryItems to the respective data from Supabase
   - `useResources` - Hook for managing the organization level resources list
-  - `useDiary` - Fetches a single diary entry with form data transformation. Used in conjunction with diary page
-  - `useExpandable` - Manages state of a collapsible list item. Used in VisitorsList component
+  - `useDiary` - Fetches a single diary entry with form data transformation. Used in conjunction with edit diary page
+  - `useExpandable` - Manages state of multiple collapsible list items. Used in VisitorsList component
+- Performance Optimizations - Several performance issues were observed in the initial implementation. The following were done:
+  - Where possible, single queries were used to fetch. Where multiple queries are involved `Promise.all()` was used
+  - Sorting, counting, and grouping was done in memory instead of in the database
+  - Revalidation cache for the detail pages
+- Branding - Branding was implemented last - globals and themes were edited for a clean, modern aesthetic.
 
 ## How I Would Improve The Project (Recommendations)
 
@@ -121,4 +126,5 @@ To achieve the schema, the following PostgreSQL tables were generated:
   - Use Delete Dialog prompts user for critical database deletions
   - Use Diary fetches a diary entry and sets the app diary state
 - Images - For CRUD operations, `useDiaryItems` can handle image metadata (requires an `images` table with `site_diary_id`, `id`, `url`, `created_at`). However, file upload to Supabase Storage is a separate concern that needs additional implementation (using `supabase.storage.from('bucket').upload()`). UI-wise, a simple image dropzone/drag-and-drop component can be implemented.
+- Logo and favicon was generated via AI - a high quality SVG would be better
 - **Stretch Goals** - I am a fan of how [DailyBean](https://play.google.com/store/apps/details?id=com.bluesignum.bluediary) structures their entries. The main list is a calendar view and clicking a calendar entry pulls up its card and link to the view page near the bottom.
