@@ -6,7 +6,7 @@ This is a site diary app done in part of an assessment for a company I am applyi
 
 ## Live Demo
 
-The application is deployed and available at: [https://site-diary-3qcvdn8a2-meio-vs-projects.vercel.app/](https://site-diary-3qcvdn8a2-meio-vs-projects.vercel.app/)
+The application is deployed and available at: [https://site-diary-zeta.vercel.app](https://site-diary-zeta.vercel.app)
 
 ## Disclaimer - AI Use
 
@@ -138,7 +138,6 @@ Key reusable components:
 - Performance Optimizations - Several performance issues were observed in the initial implementation. The following were done:
   - Where possible, single queries were used to fetch. Where multiple queries are involved `Promise.all()` was used
   - Sorting, counting, and grouping was done in memory instead of in the database
-  - Revalidation cache for the detail pages
 - Branding - Branding was implemented last - globals and themes were edited for a clean, modern aesthetic.
 - Vercel deployment detail - Webpack favored over Turbopack because of a Node environment error. NextJS was bumped down from v16 to v15 to get around this.
 

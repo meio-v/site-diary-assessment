@@ -16,7 +16,6 @@ interface PageProps {
   params: Promise<{ id: string }>
 }
 
-export const revalidate = 30
 export default async function DiaryPage({ params }: PageProps) {
   const { id } = await params
   const diaryId = parseInt(id)
