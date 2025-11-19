@@ -159,3 +159,9 @@ Key reusable components:
 - Loading - Pages are interactible while loading. This causes some glitches. Some loading visual indicators would help usability.
 - Logo and favicon was generated via AI - a high quality SVG would be better
 - **Stretch Goals** - I am a fan of how [DailyBean](https://play.google.com/store/apps/details?id=com.bluesignum.bluediary) structures their entries. The main list is a calendar view and clicking a calendar entry pulls up its card and link to the view page near the bottom.
+
+## Contact
+
+For questions or feedback about this project, please contact:
+
+**Email:** jeromeio.velarde@gmail.com
