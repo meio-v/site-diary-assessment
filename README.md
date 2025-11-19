@@ -144,6 +144,7 @@ Key reusable components:
 ## How I Would Improve The Project (Recommendations)
 
 - UX: I would eliminate the separate create/edit pages and instead use the view page for inline creation and editing. Creating a new diary entry would simply insert a new record with the date, and all other details could then be edited directly inline-similar to how Notion or Google Keep handle this workflow.
+- Add loading spinners to buttons that perform queries for better user feedback.
 - Unit Tests: I would generate unit tests to validate that the following critical app and backend logic is consistent
   - No two diaries can be made for the same day
   - No two visitors can be logged for the same diary entry
