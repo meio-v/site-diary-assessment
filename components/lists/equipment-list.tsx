@@ -234,7 +234,7 @@ export function EquipmentList({ diaryId, initialEquipment }: EquipmentListProps)
                       onSelect: handleResourceSelect,
                       onPopoverChange: setResourcePopoverOpen,
                     }}
-                    value={value}
+                        value={value}
                     onValueChange={setValue}
                     onSave={handleSave}
                     onCancel={handleCancelWithReset}
@@ -282,7 +282,7 @@ export function EquipmentList({ diaryId, initialEquipment }: EquipmentListProps)
                   onSelect: handleResourceSelect,
                   onPopoverChange: setResourcePopoverOpen,
                 }}
-                value={value}
+                    value={value}
                 onValueChange={setValue}
                 onSave={handleSave}
                 onCancel={handleCancel}

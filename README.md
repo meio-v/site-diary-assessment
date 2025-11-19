@@ -112,6 +112,7 @@ To achieve the schema, the following PostgreSQL tables were generated:
   - Sorting, counting, and grouping was done in memory instead of in the database
   - Revalidation cache for the detail pages
 - Branding - Branding was implemented last - globals and themes were edited for a clean, modern aesthetic.
+- Vercel deployment detail - Webpack was favoured over Turbopack because of a Node environment error.
 
 ## How I Would Improve The Project (Recommendations)
 
