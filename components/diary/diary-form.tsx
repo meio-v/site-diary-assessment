@@ -133,7 +133,7 @@ export function DiaryForm({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="description">Notes *</FieldLabel>
+              <FieldLabel htmlFor="description">Summary of Work Done *</FieldLabel>
               <Textarea
                 id="description"
                 required

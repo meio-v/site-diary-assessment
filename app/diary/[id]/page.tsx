@@ -68,10 +68,10 @@ export default async function DiaryPage({ params }: PageProps) {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <Link href="/">
+        <Link href="/" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md">
           <Button variant="outline">← Back to List</Button>
         </Link>
-        <Link href={`/diary/${diary.id}/edit`}>
+        <Link href={`/diary/${diary.id}/edit`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md">
           <Button variant="outline">Edit</Button>
         </Link>
       </div>
@@ -124,8 +124,8 @@ export default async function DiaryPage({ params }: PageProps) {
           <Separator className="my-4" />
           
           <div>
-            <h3 className="font-semibold mb-2">Notes</h3>
-            <p className="text-muted-foreground whitespace-pre-wrap">
+            <h3 className="font-semibold mb-3">Summary of Work Done</h3>
+            <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
               {diary.description}
             </p>
           </div>

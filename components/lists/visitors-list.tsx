@@ -8,6 +8,10 @@ import { Plus, Building2, Mail, Phone, FileText } from 'lucide-react'
 import { ItemActions } from '@/components/shared/item-actions'
 import { VisitorForm } from '@/components/forms/visitor-form'
 import { ConfirmDialog } from '@/components/dialogs/confirm-dialog'
+import { useCrudList } from '@/hooks/use-crud-list'
+import { useDeleteDialog } from '@/hooks/use-delete-dialog'
+import { useExpandable } from '@/hooks/use-expandable'
+import { useVisitors } from '@/hooks/use-visitors'
 import type { Visitor } from '@/types/diary'
 
 interface VisitorsListProps {
@@ -24,13 +28,25 @@ interface VisitorFormData {
 }
 
 export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
-  const [visitors, setVisitors] = useState<Visitor[]>(initialVisitors)
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [isAdding, setIsAdding] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set())
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [visitorToDelete, setVisitorToDelete] = useState<number | null>(null)
+  const {
+    visitors,
+    addVisitor,
+    updateVisitor,
+    removeVisitor,
+  } = useVisitors(diaryId, initialVisitors)
+
+  const {
+    editingId,
+    isAdding,
+    loading,
+    setLoading,
+    handleAddClick,
+    handleEditClick,
+    handleCancel,
+  } = useCrudList<Visitor>(visitors)
+
+  const { expandedIds, toggleExpand, collapse } = useExpandable()
+  const { isOpen: deleteDialogOpen, itemToDelete: visitorToDelete, openDialog: handleDeleteClick, closeDialog, setIsOpen: setDeleteDialogOpen } = useDeleteDialog<number>()
   
   // Form state for editing/adding
   const [formData, setFormData] = useState<VisitorFormData>({
@@ -41,9 +57,8 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
     contact_details: '',
   })
 
-  const handleAddClick = () => {
-    setIsAdding(true)
-    setEditingId(null)
+  const handleAddClickWithReset = () => {
+    handleAddClick()
     setFormData({
       name: '',
       company_name: '',
@@ -53,9 +68,8 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
     })
   }
 
-  const handleEditClick = (visitor: Visitor) => {
-    setEditingId(visitor.id)
-    setIsAdding(false)
+  const handleEditClickWithData = (visitor: Visitor) => {
+    handleEditClick(visitor)
     setFormData({
       name: visitor.name,
       company_name: visitor.company_name || '',
@@ -65,9 +79,8 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
     })
   }
 
-  const handleCancel = () => {
-    setEditingId(null)
-    setIsAdding(false)
+  const handleCancelWithReset = () => {
+    handleCancel()
     setFormData({
       name: '',
       company_name: '',
@@ -102,8 +115,8 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
 
         if (error) throw error
 
-        setVisitors(visitors.map(v => v.id === editingId ? data : v))
-        setEditingId(null)
+        updateVisitor(editingId, data)
+        handleCancel()
         toast.success('Visitor updated successfully')
       } else if (isAdding) {
         // Create new visitor
@@ -122,8 +135,8 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
 
         if (error) throw error
 
-        setVisitors([...visitors, data])
-        setIsAdding(false)
+        addVisitor(data)
+        handleCancel()
         toast.success('Visitor added successfully')
       }
 
@@ -147,11 +160,6 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
     }
   }
 
-  const handleDeleteClick = (visitorId: number) => {
-    setVisitorToDelete(visitorId)
-    setDeleteDialogOpen(true)
-  }
-
   const handleDeleteConfirm = async () => {
     if (!visitorToDelete) return
 
@@ -164,32 +172,16 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
 
       if (error) throw error
 
-      setVisitors(visitors.filter(v => v.id !== visitorToDelete))
-      setExpandedIds(prev => {
-        const next = new Set(prev)
-        next.delete(visitorToDelete)
-        return next
-      })
+      removeVisitor(visitorToDelete)
+      collapse(visitorToDelete)
       toast.success('Visitor deleted successfully')
     } catch (error) {
       console.error('Error deleting visitor:', error)
       toast.error('Failed to delete visitor. Please try again.')
     } finally {
       setLoading(false)
-      setVisitorToDelete(null)
+      closeDialog()
     }
-  }
-
-  const toggleExpand = (visitorId: number) => {
-    setExpandedIds(prev => {
-      const next = new Set(prev)
-      if (next.has(visitorId)) {
-        next.delete(visitorId)
-      } else {
-        next.add(visitorId)
-      }
-      return next
-    })
   }
 
   const hasDetails = (visitor: Visitor) => {
@@ -213,7 +205,7 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
                 data={formData}
                 onChange={setFormData}
                 onSave={handleSave}
-                onCancel={handleCancel}
+                onCancel={handleCancelWithReset}
                 loading={loading}
                 showActions={true}
               />
@@ -225,7 +217,7 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
                     <button
                       onClick={() => toggleExpand(visitor.id)}
                       disabled={loading}
-                      className="w-full text-left font-medium cursor-pointer hover:opacity-80 transition-opacity"
+                      className="w-full text-left font-medium cursor-pointer hover:opacity-80 transition-opacity motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-1 -mx-1"
                     >
                       {visitor.name}
                     </button>
@@ -262,7 +254,7 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
                   )}
                 </div>
                 <ItemActions
-                  onEdit={() => handleEditClick(visitor)}
+                  onEdit={() => handleEditClickWithData(visitor)}
                   onDelete={() => handleDeleteClick(visitor.id)}
                   loading={loading}
                 />
@@ -289,7 +281,7 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
             <Button
               size="sm"
               variant="outline"
-              onClick={handleAddClick}
+              onClick={handleAddClickWithReset}
               disabled={loading}
               className="w-full"
             >

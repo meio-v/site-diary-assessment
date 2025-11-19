@@ -1,55 +1,19 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabaseClient } from '@/lib/supabase'
-import { DiaryForm, type DiarySubmissionData, type DiaryFormInitialData } from '@/components/diary/diary-form'
+import { DiaryForm, type DiarySubmissionData } from '@/components/diary/diary-form'
 import { Button } from '@/components/ui/button'
+import { useDiary } from '@/hooks/use-diary'
 
 export default function EditDiaryPage() {
   const router = useRouter()
   const params = useParams()
   const diaryId = Number(params.id)
 
-  const [loading, setLoading] = useState(true)
+  const { initialData, loading } = useDiary(diaryId)
   const [error, setError] = useState<string | null>(null)
-  const [initialData, setInitialData] = useState<DiaryFormInitialData | undefined>()
-
-  useEffect(() => {
-    if (Number.isNaN(diaryId)) {
-      router.push('/')
-      return
-    }
-
-    async function fetchDiary() {
-      try {
-        const { data, error } = await supabaseClient
-          .from('site_diaries')
-          .select('*')
-          .eq('id', diaryId)
-          .single()
-
-        if (error || !data) {
-          router.push('/')
-          return
-        }
-
-        setInitialData({
-          date: data.date.split('T')[0],
-          description: data.description,
-          weather: data.weather,
-          temperature: data.temperature ?? '',
-        })
-      } catch (err) {
-        console.error('Error fetching diary:', err)
-        router.push('/')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchDiary()
-  }, [diaryId, router])
 
   const handleSubmit = async (formData: DiarySubmissionData) => {
     setError(null)

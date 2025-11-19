@@ -4,11 +4,13 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { supabaseClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Plus, Check, X } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { ItemActions } from '@/components/shared/item-actions'
 import { ConfirmDialog } from '@/components/dialogs/confirm-dialog'
+import { IncidentForm } from '@/components/forms/incident-form'
+import { useCrudList } from '@/hooks/use-crud-list'
+import { useDeleteDialog } from '@/hooks/use-delete-dialog'
+import { useIncidents } from '@/hooks/use-incidents'
 import type { Incident } from '@/types/diary'
 
 interface IncidentsListProps {
@@ -22,39 +24,48 @@ interface IncidentFormData {
 }
 
 export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps) {
-  const [incidents, setIncidents] = useState<Incident[]>(initialIncidents)
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [isAdding, setIsAdding] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [incidentToDelete, setIncidentToDelete] = useState<number | null>(null)
+  const {
+    incidents,
+    addIncident,
+    updateIncident,
+    removeIncident,
+  } = useIncidents(diaryId, initialIncidents)
+
+  const {
+    editingId,
+    isAdding,
+    loading,
+    setLoading,
+    handleAddClick,
+    handleEditClick,
+    handleCancel,
+  } = useCrudList<Incident>(incidents)
+
+  const { isOpen: deleteDialogOpen, itemToDelete: incidentToDelete, openDialog: handleDeleteClick, closeDialog, setIsOpen: setDeleteDialogOpen } = useDeleteDialog<number>()
 
   const [formData, setFormData] = useState<IncidentFormData>({
     title: '',
     description: '',
   })
 
-  const handleAddClick = () => {
-    setIsAdding(true)
-    setEditingId(null)
+  const handleAddClickWithReset = () => {
+    handleAddClick()
     setFormData({
       title: '',
       description: '',
     })
   }
 
-  const handleEditClick = (incident: Incident) => {
-    setEditingId(incident.id)
-    setIsAdding(false)
+  const handleEditClickWithData = (incident: Incident) => {
+    handleEditClick(incident)
     setFormData({
       title: incident.title,
       description: incident.description,
     })
   }
 
-  const handleCancel = () => {
-    setEditingId(null)
-    setIsAdding(false)
+  const handleCancelWithReset = () => {
+    handleCancel()
     setFormData({
       title: '',
       description: '',
@@ -83,8 +94,8 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
 
         if (error) throw error
 
-        setIncidents(incidents.map(i => i.id === editingId ? data : i))
-        setEditingId(null)
+        updateIncident(editingId, data)
+        handleCancel()
         toast.success('Incident updated successfully')
       } else if (isAdding) {
         const { data, error } = await supabaseClient
@@ -99,8 +110,8 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
 
         if (error) throw error
 
-        setIncidents([...incidents, data])
-        setIsAdding(false)
+        addIncident(data)
+        handleCancel()
         toast.success('Incident added successfully')
       }
 
@@ -116,11 +127,6 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
     }
   }
 
-  const handleDeleteClick = (incidentId: number) => {
-    setIncidentToDelete(incidentId)
-    setDeleteDialogOpen(true)
-  }
-
   const handleDeleteConfirm = async () => {
     if (!incidentToDelete) return
 
@@ -133,14 +139,14 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
 
       if (error) throw error
 
-      setIncidents(incidents.filter(i => i.id !== incidentToDelete))
+      removeIncident(incidentToDelete)
       toast.success('Incident deleted successfully')
     } catch (error) {
       console.error('Error deleting incident:', error)
       toast.error('Failed to delete incident. Please try again.')
     } finally {
       setLoading(false)
-      setIncidentToDelete(null)
+      closeDialog()
     }
   }
 
@@ -156,45 +162,15 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
               className="group flex items-start justify-between p-2 rounded-md hover:bg-accent/50"
             >
               {editingId === incident.id ? (
-                // Edit mode
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      placeholder="Incident title *"
-                      className="flex-1"
-                      required
-                      disabled={loading}
-                    />
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={handleSave}
-                      disabled={loading}
-                      className="h-8 w-8"
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={handleCancel}
-                      disabled={loading}
-                      className="h-8 w-8"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <Textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Description *"
-                    rows={3}
-                    required
-                    disabled={loading}
-                  />
-                </div>
+                <IncidentForm
+                  title={formData.title}
+                  description={formData.description}
+                  onTitleChange={(title) => setFormData({ ...formData, title })}
+                  onDescriptionChange={(description) => setFormData({ ...formData, description })}
+                  onSave={handleSave}
+                  onCancel={handleCancelWithReset}
+                  loading={loading}
+                />
               ) : (
                 // View mode
                 <>
@@ -205,7 +181,7 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
                     </div>
                   </div>
                   <ItemActions
-                    onEdit={() => handleEditClick(incident)}
+                    onEdit={() => handleEditClickWithData(incident)}
                     onDelete={() => handleDeleteClick(incident.id)}
                     loading={loading}
                   />
@@ -215,42 +191,15 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
           ))}
 
           {isAdding && (
-            <li className="p-2 rounded-md space-y-2">
-              <div className="flex items-center gap-2">
-                <Input
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Incident title *"
-                  className="flex-1"
-                  required
-                  disabled={loading}
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={handleSave}
-                  disabled={loading}
-                  className="h-8 w-8"
-                >
-                  <Check className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={handleCancel}
-                  disabled={loading}
-                  className="h-8 w-8"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-              <Textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Description *"
-                rows={3}
-                required
-                disabled={loading}
+            <li className="p-2 rounded-md">
+              <IncidentForm
+                title={formData.title}
+                description={formData.description}
+                onTitleChange={(title) => setFormData({ ...formData, title })}
+                onDescriptionChange={(description) => setFormData({ ...formData, description })}
+                onSave={handleSave}
+                onCancel={handleCancelWithReset}
+                loading={loading}
               />
             </li>
           )}
@@ -260,7 +209,7 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
               <Button
                 size="sm"
                 variant="outline"
-                onClick={handleAddClick}
+                onClick={handleAddClickWithReset}
                 disabled={loading}
                 className="w-full"
               >

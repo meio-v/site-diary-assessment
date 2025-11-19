@@ -20,7 +20,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Link href="/diary/new" className="fixed bottom-6 right-6 z-50">
         <Button
           size="icon"
-          className="h-14 w-14 rounded-2xl shadow-xl bg-primary text-primary-foreground hover:bg-primary/90"
+          className="h-14 w-14 rounded-2xl shadow-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-transform motion-reduce:transition-none hover:scale-105 motion-reduce:hover:scale-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          aria-label="Create new diary entry"
         >
           <Plus className="h-6 w-6" />
           <span className="sr-only">Create diary entry</span>

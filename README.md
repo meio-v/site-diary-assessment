@@ -1,65 +1,124 @@
-## AI-Assisted Development
+# Site Diary App
 
-### Tools Used
+## Description
 
-I used **Cursor AI** (powered by Claude) extensively throughout this project. The assessment explicitly encourages AI use, and I want to be transparent about how I used it.
+This is a site diary app done in part of an assessment for a company I am applying for
 
-### How I Used AI
+## Disclaimer - AI Use
 
-**Code Generation**: AI generated most of the initial code based on my requirements. However, I:
+**Cursor AI** (powered by Claude) was used extensively throughout this project. It was used to plan architecture, generate boilerplate, and drafting components. Refinements for clarity were manually done after, particularly separating larger components into re-usable modules.
 
-- Provided clear specifications and requirements
-- Reviewed all generated code for correctness
-- Refactored and improved AI suggestions
-- Fixed bugs that AI-generated code introduced
+## Installation
 
-**Problem Solving**: When I encountered issues, I:
+To run a copy of this project on your own machine, you'll need:
 
-- Identified the problem (e.g., N+1 queries causing slow renders)
-- Asked AI for potential solutions
-- Evaluated multiple approaches
-- Chose the best solution and implemented it
-- Tested and verified the fix
+### Prerequisites
 
-**Architecture Decisions**: All major decisions were mine:
+- **Node.js** 18.x or higher
+- **npm** or **yarn** package manager
+- A **Supabase** account and project (free tier works)
 
-- Chose Next.js 16 with App Router
-- Designed normalized database schema
-- Decided on component architecture (server vs client components)
-- Made UX decisions (inline editing, hover actions, combobox pattern)
-- Chose caching strategy (no cache on list, 30s on detail pages)
+### Step 1: Clone the Repository
 
-### What This Demonstrates
+```bash
+git clone <repository-url>
+cd site-diary
+```
 
-This project shows my ability to:
+### Step 2: Install Dependencies
 
-- **Work with modern development tools** - AI is part of the ecosystem
-- **Make technical decisions** - I chose the architecture and patterns
-- **Solve problems systematically** - I identified issues and directed solutions
-- **Understand code** - I reviewed, modified, and can explain everything
-- **Think about trade-offs** - I made decisions about performance, UX, and code quality
+```bash
+npm install
+# or
+yarn install
+```
 
-### What This Project Demonstrates
+### Step 3: Set Up Environment Variables
 
-This project showcases my technical skills and problem-solving approach:
+Create a `.env.local` file in the root directory with the following variables:
 
-**Architecture & Design**
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-- Designed a normalized database schema with proper relationships and constraints
-- Made informed decisions about component architecture (server vs client components)
-- Implemented efficient data fetching patterns to avoid N+1 query problems
-- Chose appropriate caching strategies for optimal performance
+You can find these values in your Supabase project settings under "API".
 
-**Problem Solving**
+### Step 4: Set Up the Database
 
-- Identified performance bottlenecks (800ms+ render times) and optimized queries
-- Recognized code duplication and refactored into reusable components
-- Solved complex UX challenges (combobox pattern, inline editing, hover states)
-- Debugged and fixed issues in AI-generated code
+Run the complete migration script in your Supabase SQL Editor:
 
-**Code Quality**
+**For a fresh setup**, use the complete migration:
 
-- Conducted comprehensive code reviews and removed unused dependencies
-- Organized components into logical folder structure
-- Improved type safety throughout the application
-- Replaced native browser APIs with custom components for better UX
+- `schema-complete.sql` - Creates all tables, indexes, constraints, and triggers in one go
+
+### Step 5: Run the Development Server
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+### Step 6: Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+## Schema Design
+
+The project was started by designing the schema:
+
+- SiteDiary - The domain object. Holds references to incidents, resources utilized, visitors
+- Visitors - A daily log of visitors, each entry unique to its site diary. For example, Meio Velarde in the diary for November 19th receives a different `visitor_id` from Meio Velarde in the diary for November 18th; both are allowed.
+- Resources - Physical assets of the company used for projects. Can be equipment or materials.
+- Incidents - Records of incidents tied to a specific Site Diary entry.
+
+### Database Design
+
+To achieve the schema, the following PostgreSQL tables were generated:
+
+- `site_diaries` table - Main diary entries
+- `visitors` table - Visitor information with optional fields
+- `resources` table - Master list of resources/equipment
+- `resource_utilization` table - Links resources to diary entries
+- `incidents` table - Incident records
+- All necessary indexes for performance
+- Foreign key constraints with CASCADE deletes
+- Automatic `updated_at` timestamp triggers
+
+## Pages
+
+- New Diary Entry Page - `diary/new` - A page for the creation of a new diary entry. Initial information to create the diary is entered here: date, summary of work done, weather condition, and temperature.
+- View Diary Entry Page / Manage Diary - `/diary/id` - A dedicated page to a single diary entry
+- Edit Diary Entry Page - `/diary/id/edit` - Edit the initial information entered in the diary (date, description, weather, temperature)
+
+## Implementation Details
+
+- **ShadCN** was used as the main component library for this project
+- **Weather Condition**: Implemented via enum/icon mapping under lib/weather.ts. Icons are from lucide react
+- **Hooks** were created for common use cases in the app.
+  - `useDiaryItems` - Generic hook for fetching diary-related items (visitors, incidents) with CRUD operations
+  - `useIncidents / useVisitors` - Implementations of `useDiaryItems to the respective data from Supabase
+  - `useResources` - Hook for managing the organization level resources list
+  - `useDiary` - Fetches a single diary entry with form data transformation. Used in conjunction with diary page
+  - `useExpandable` - Manages state of a collapsible list item. Used in VisitorsList component
+
+## How I Would Improve The Project (Recommendations)
+
+- UX: I would eliminate the separate create/edit pages and instead use the view page for inline creation and editing. Creating a new diary entry would simply insert a new record with the date, and all other details could then be edited directly inline-similar to how Notion or Google Keep handle this workflow.
+- Unit Tests: I would generate unit tests to validate that the following critical app and backend logic is consistent
+  - No two diaries can be made for the same day
+  - No two visitors can be logged for the same diary entry
+  - ComboBox can search for Resources
+  - The same Resource cannot be searched for in the ComboBox if it is already in the diary
+  - Backend returns the correct 4xx status codes for the above errors.
+  - Use Crud List Hook correctly adds and resets its inline forms when the appropriate buttons are clicked (add, edit, cancel)
+  - Use Delete Dialog prompts user for critical database deletions
+  - Use Diary fetches a diary entry and sets the app diary state
+- Images - For CRUD operations, `useDiaryItems` can handle image metadata (requires an `images` table with `site_diary_id`, `id`, `url`, `created_at`). However, file upload to Supabase Storage is a separate concern that needs additional implementation (using `supabase.storage.from('bucket').upload()`). UI-wise, a simple image dropzone/drag-and-drop component can be implemented.
+- **Stretch Goals** - I am a fan of how [DailyBean](https://play.google.com/store/apps/details?id=com.bluesignum.bluediary) structures their entries. The main list is a calendar view and clicking a calendar entry pulls up its card and link to the view page near the bottom.
