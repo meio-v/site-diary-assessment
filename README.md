@@ -4,6 +4,10 @@
 
 This is a site diary app done in part of an assessment for a company I am applying for
 
+## Live Demo
+
+The application is deployed and available at: [https://site-diary-3qcvdn8a2-meio-vs-projects.vercel.app/](https://site-diary-3qcvdn8a2-meio-vs-projects.vercel.app/)
+
 ## Disclaimer - AI Use
 
 **Cursor AI** (powered by Claude) was used extensively throughout this project. It was used to plan architecture, generate boilerplate, and drafting components. Refinements for clarity were manually done after, particularly separating larger components into re-usable modules.
@@ -101,6 +105,24 @@ To achieve the schema, the following PostgreSQL tables were generated:
 - New Diary Entry Page - `diary/new` - A page for the creation of a new diary entry. Initial information to create the diary is entered here: date, summary of work done, weather condition, and temperature.
 - View Diary Entry Page / Manage Diary - `/diary/id` - A dedicated page to a single diary entry
 - Edit Diary Entry Page - `/diary/id/edit` - Edit the initial information entered in the diary (date, description, weather, temperature)
+
+## Component Architecture
+
+Components are organized into logical folders for maintainability:
+
+- **`diary/`** - Diary-specific components (`diary-card`, `diary-form`)
+- **`forms/`** - Reusable form components for adding/editing items (`visitor-form`, `equipment-form`, `incident-form`)
+- **`lists/`** - List management components with inline editing (`visitors-list`, `equipment-list`, `incidents-list`)
+- **`shared/`** - Shared utility components used across the app (`weather-display`, `weather-select`, `resource-combobox`, `utilization-input`, `item-actions`)
+- **`dialogs/`** - Dialog/modal components (`confirm-dialog`, `create-resource-dialog`)
+- **`ui/`** - Base UI components from ShadCN (Button, Card, Input, Select, etc.)
+
+Key reusable components:
+
+- **`ResourceCombobox`** - Searchable combobox for selecting resources with creation capability
+- **`WeatherDisplay`** - Displays weather condition with colored badges and icons
+- **`ItemActions`** - Edit and delete action buttons for list items
+- **`ConfirmDialog`** - Reusable confirmation dialog for destructive actions
 
 ## Implementation Details
 
