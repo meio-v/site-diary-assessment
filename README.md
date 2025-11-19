@@ -128,5 +128,6 @@ To achieve the schema, the following PostgreSQL tables were generated:
   - Use Diary fetches a diary entry and sets the app diary state
 - Images - For CRUD operations, `useDiaryItems` can handle image metadata (requires an `images` table with `site_diary_id`, `id`, `url`, `created_at`). However, file upload to Supabase Storage is a separate concern that needs additional implementation (using `supabase.storage.from('bucket').upload()`). UI-wise, a simple image dropzone/drag-and-drop component can be implemented.
 - PageSpeed insights - Tools like pagespeed insights have not been used on the project yet so could use an iteration.
+- Loading - Pages are interactible while loading. This causes some glitches. Some loading visual indicators would help usability.
 - Logo and favicon was generated via AI - a high quality SVG would be better
 - **Stretch Goals** - I am a fan of how [DailyBean](https://play.google.com/store/apps/details?id=com.bluesignum.bluediary) structures their entries. The main list is a calendar view and clicking a calendar entry pulls up its card and link to the view page near the bottom.
