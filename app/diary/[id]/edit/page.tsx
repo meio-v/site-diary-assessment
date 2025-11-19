@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabaseClient } from '@/lib/supabase'
 import { DiaryForm, type DiarySubmissionData } from '@/components/diary/diary-form'
-import { Button } from '@/components/ui/button'
 import { useDiary } from '@/hooks/use-diary'
 
 export default function EditDiaryPage() {
@@ -63,11 +62,6 @@ export default function EditDiaryPage() {
           <p className="text-destructive text-sm">{error}</p>
         </div>
       )}
-      <div className="max-w-2xl mx-auto mt-4">
-        <Button variant="outline" onClick={() => router.back()}>
-          Cancel
-        </Button>
-      </div>
     </>
   )
 }

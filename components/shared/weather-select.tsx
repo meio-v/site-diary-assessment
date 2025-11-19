@@ -1,7 +1,7 @@
 'use client'
 
 import { weatherOptions, type WeatherCondition } from '@/lib/weather'
-import { Label } from '@/components/ui/label'
+import { FieldLabel } from '@/components/ui/field'
 import {
   Select,
   SelectContent,
@@ -17,11 +17,12 @@ interface WeatherSelectProps {
 }
 
 export function WeatherSelect({ value, onChange, label = 'Weather *' }: WeatherSelectProps) {
+  const isRequired = label.includes('*')
   return (
-    <div className="space-y-2">
-      <Label>{label}</Label>
+    <>
+      <FieldLabel htmlFor="weather-select" className={isRequired ? 'text-primary' : ''}>{label}</FieldLabel>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger>
+        <SelectTrigger id="weather-select">
           <SelectValue placeholder="Select weather condition" />
         </SelectTrigger>
         <SelectContent>
@@ -38,6 +39,6 @@ export function WeatherSelect({ value, onChange, label = 'Weather *' }: WeatherS
           })}
         </SelectContent>
       </Select>
-    </div>
+    </>
   )
 }

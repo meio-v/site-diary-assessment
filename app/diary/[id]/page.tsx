@@ -69,30 +69,30 @@ export default async function DiaryPage({ params }: PageProps) {
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <Link href="/" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md">
-          <Button variant="outline">← Back to List</Button>
+          <Button variant="outline" className="bg-white hover:bg-muted transition-colors">← Back to List</Button>
         </Link>
         <Link href={`/diary/${diary.id}/edit`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md">
-          <Button variant="outline">Edit</Button>
+          <Button variant="outline" className="bg-white hover:bg-muted transition-colors">Edit</Button>
         </Link>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl">{formattedDate}</CardTitle>
-          <div className="mt-2 flex items-center gap-4">
+          <CardTitle className="text-3xl text-primary font-logo">{formattedDate}</CardTitle>
+          <div className="mt-2 flex items-center gap-4 text-sm font-medium">
             <WeatherDisplay 
               weather={diary.weather} 
               temperature={diary.temperature}
               className="text-muted-foreground"
             />
             {visitorCount > 0 && (
-              <div className="flex items-center gap-1 text-muted-foreground">
+              <div className="flex items-center gap-1.5 text-blue-600">
                 <Users className="h-5 w-5" />
                 <span>{visitorCount} visitor{visitorCount !== 1 ? 's' : ''}</span>
               </div>
             )}
             {incidentCount > 0 && (
-              <div className="flex items-center gap-1 text-destructive">
+              <div className="flex items-center gap-1.5 text-destructive">
                 <AlertTriangle className="h-5 w-5" />
                 <span>{incidentCount} incident{incidentCount !== 1 ? 's' : ''}</span>
               </div>
@@ -124,7 +124,7 @@ export default async function DiaryPage({ params }: PageProps) {
           <Separator className="my-4" />
           
           <div>
-            <h3 className="font-semibold mb-3">Summary of Work Done</h3>
+            <h3 className="text-xl font-logo font-bold tracking-tight mb-3">Summary of Work Done</h3>
             <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
               {diary.description}
             </p>

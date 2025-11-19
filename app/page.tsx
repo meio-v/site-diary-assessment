@@ -85,15 +85,23 @@ export default async function Home() {
   }))
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {diariesWithCounts.map(diary => (
-        <DiaryCard 
-          key={diary.id} 
-          diary={diary} 
-          visitorCount={diary.visitorCount}
-          incidentCount={diary.incidentCount}
-        />
-      ))}
+    <div className="space-y-6">
+      <div className="flex flex-col gap-2 mb-4">
+        <h2 className="text-3xl md:text-4xl font-logo font-bold text-foreground tracking-tight">Daily Site Diaries</h2>
+        <p className="text-base text-muted-foreground/90 max-w-2xl">
+          Stay on top of visitors, equipment, and incidents across {diaries.length} tracked day{diaries.length === 1 ? '' : 's'}.
+        </p>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+        {diariesWithCounts.map(diary => (
+          <DiaryCard 
+            key={diary.id} 
+            diary={diary} 
+            visitorCount={diary.visitorCount}
+            incidentCount={diary.incidentCount}
+          />
+        ))}
+      </div>
     </div>
   )
 }

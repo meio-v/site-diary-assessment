@@ -191,13 +191,13 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
   return (
     <>
       <div>
-        <h3 className="font-semibold mb-3">Visitors</h3>
+        <h3 className="text-xl font-logo font-bold tracking-tight mb-3">Visitors</h3>
 
         <ul className="space-y-2">
         {visitors.map((visitor) => (
           <li
             key={visitor.id}
-            className="group flex items-center justify-between p-2 rounded-md hover:bg-accent/50"
+            className="group flex items-center justify-between p-2 hover:bg-muted"
           >
             {editingId === visitor.id ? (
               // Edit mode
@@ -264,7 +264,7 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
         ))}
 
         {isAdding && (
-          <li className="p-2 rounded-md space-y-2">
+          <li className="p-2 space-y-2">
             <VisitorForm
               data={formData}
               onChange={setFormData}
@@ -283,7 +283,7 @@ export function VisitorsList({ diaryId, initialVisitors }: VisitorsListProps) {
               variant="outline"
               onClick={handleAddClickWithReset}
               disabled={loading}
-              className="w-full"
+              className="w-full hover:bg-primary hover:text-white group"
             >
               <Plus className="h-4 w-4" />
             </Button>

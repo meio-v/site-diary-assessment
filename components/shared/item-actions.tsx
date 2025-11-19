@@ -26,7 +26,7 @@ export function ItemActions({ onEdit, onDelete, loading }: ItemActionsProps) {
         variant="ghost"
         onClick={onDelete}
         disabled={loading}
-        className="h-8 w-8 text-destructive hover:text-destructive"
+        className="h-8 w-8 text-destructive"
       >
         <Trash2 className="h-4 w-4" />
       </Button>

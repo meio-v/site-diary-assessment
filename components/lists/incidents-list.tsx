@@ -153,13 +153,13 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
   return (
     <>
       <div>
-        <h3 className="font-semibold mb-3">Incidents</h3>
+        <h3 className="text-xl font-logo font-bold tracking-tight mb-3">Incidents</h3>
 
         <ul className="space-y-2">
           {incidents.map((incident) => (
             <li
               key={incident.id}
-              className="group flex items-start justify-between p-2 rounded-md hover:bg-accent/50"
+              className="group flex items-start justify-between p-2 hover:bg-muted"
             >
               {editingId === incident.id ? (
                 <IncidentForm
@@ -191,7 +191,7 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
           ))}
 
           {isAdding && (
-            <li className="p-2 rounded-md">
+            <li className="p-2">
               <IncidentForm
                 title={formData.title}
                 description={formData.description}
@@ -211,7 +211,7 @@ export function IncidentsList({ diaryId, initialIncidents }: IncidentsListProps)
                 variant="outline"
                 onClick={handleAddClickWithReset}
                 disabled={loading}
-                className="w-full"
+                className="w-full hover:bg-primary hover:text-white group"
               >
                 <Plus className="h-4 w-4" />
               </Button>

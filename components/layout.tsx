@@ -1,19 +1,31 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background relative">
-      <header className="border-b">
+      <header className="sticky top-0 z-40 bg-background/95">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/">
-            <h1 className="text-2xl font-bold">Site Diary</h1>
+          <Link
+            href="/"
+            className="flex items-center hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
+          >
+            <Image
+              src="/buildlog-logo.png"
+              alt="BuildLog Site Diaries"
+              width={180}
+              height={66}
+              className="h-auto w-auto max-w-[400px] object-contain"
+              quality={90}
+              priority
+            />
           </Link>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 pb-24">
+      <main className="container mx-auto pl-6 md:pl-8 pr-4 pt-6 md:pt-8 pb-24">
         {children}
       </main>
 

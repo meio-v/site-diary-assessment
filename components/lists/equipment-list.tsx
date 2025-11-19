@@ -209,13 +209,13 @@ export function EquipmentList({ diaryId, initialEquipment }: EquipmentListProps)
   return (
     <>
       <div>
-        <h3 className="font-semibold mb-3">Resources Used</h3>
+        <h3 className="text-xl font-logo font-bold tracking-tight mb-3">Resources Used</h3>
 
         <ul className="space-y-2">
           {equipment.map((item) => (
             <li
               key={item.id}
-              className="group flex items-center justify-between p-2 rounded-md hover:bg-accent/50"
+              className="group flex items-center justify-between p-2 hover:bg-muted"
             >
               {editingId === item.id ? (
                 // Edit mode
@@ -267,7 +267,7 @@ export function EquipmentList({ diaryId, initialEquipment }: EquipmentListProps)
           ))}
 
           {isAdding && (
-            <li className="p-2 rounded-md">
+            <li className="p-2">
               <EquipmentForm
                 resources={resources}
                 usedResourceIds={usedResourceIds}
@@ -298,7 +298,7 @@ export function EquipmentList({ diaryId, initialEquipment }: EquipmentListProps)
                 variant="outline"
                 onClick={handleAddClickWithReset}
                 disabled={loading}
-                className="w-full"
+                className="w-full hover:bg-primary hover:text-white group"
               >
                 <Plus className="h-4 w-4" />
               </Button>

@@ -98,13 +98,13 @@ export function DiaryForm({
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6">{title}</h2>
+      <h2 className="text-5xl font-logo font-bold text-foreground tracking-tight mb-10">{title}</h2>
       
       <form onSubmit={handleSubmit}>
         <FieldSet>
           <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="date">Date *</FieldLabel>
+            <Field className="md:w-1/2">
+              <FieldLabel htmlFor="date" className="text-primary">Date *</FieldLabel>
               <Input
                 id="date"
                 type="date"
@@ -114,33 +114,38 @@ export function DiaryForm({
               />
             </Field>
 
-            <Field>
-              <WeatherSelect
-                value={formData.weather}
-                onChange={(value) => setFormData({ ...formData, weather: value })}
-              />
-            </Field>
+            <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-5">
+              <Field className="md:w-1/2 md:shrink-0">
+                <WeatherSelect
+                  value={formData.weather}
+                  onChange={(value) => setFormData({ ...formData, weather: value })}
+                  label="Weather *"
+                />
+              </Field>
+
+              <Field className="md:w-[150px] md:shrink-0">
+                <FieldLabel htmlFor="temperature">Temperature (°C)</FieldLabel>
+                <Input
+                  id="temperature"
+                  type="number"
+                  placeholder="e.g. 23"
+                  className="w-full"
+                  value={formData.temperature}
+                  onChange={(e) => setFormData({ ...formData, temperature: e.target.value === '' ? '' : Number(e.target.value) })}
+                />
+              </Field>
+            </div>
 
             <Field>
-              <FieldLabel htmlFor="temperature">Temperature (°C)</FieldLabel>
-              <Input
-                id="temperature"
-                type="number"
-                placeholder="e.g. 23"
-                value={formData.temperature}
-                onChange={(e) => setFormData({ ...formData, temperature: e.target.value === '' ? '' : Number(e.target.value) })}
-              />
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="description">Summary of Work Done *</FieldLabel>
+              <FieldLabel htmlFor="description" className="text-primary">Summary of Work Done *</FieldLabel>
               <Textarea
                 id="description"
                 required
-                rows={6}
-                placeholder="Enter notes about work completed, activities, and notable events..."
+                rows={8}
+                placeholder="Describe work completed, progress made, and any major events..."
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="resize-y"
               />
             </Field>
           </FieldGroup>
@@ -150,8 +155,23 @@ export function DiaryForm({
           <p className="text-destructive text-sm mt-2">{error}</p>
         )}
 
-        <div className="flex gap-4 mt-6">
-          <Button type="submit" disabled={isSubmitting}>
+        <div className="flex gap-5 mt-10 justify-end">
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="lg"
+            className="bg-white hover:bg-muted/50 transition-colors border-border"
+            onClick={() => window.history.back()}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            disabled={isSubmitting} 
+            size="lg"
+            className="shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1),0_1px_4px_-1px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.15),0_2px_6px_-1px_rgba(0,0,0,0.1)] transition-shadow"
+          >
             {isSubmitting ? loadingText : submitButtonText}
           </Button>
         </div>
