@@ -96,6 +96,9 @@ export function DiaryForm({
 
   const isSubmitting = loading || externalLoading
 
+  // Get today's date in YYYY-MM-DD format for max date restriction
+  const today = new Date().toISOString().split('T')[0]
+
   return (
     <div className="max-w-2xl mx-auto">
       <h2 className="text-5xl font-logo font-bold text-foreground tracking-tight mb-10">{title}</h2>
@@ -109,6 +112,7 @@ export function DiaryForm({
                 id="date"
                 type="date"
                 required
+                max={today}
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               />
