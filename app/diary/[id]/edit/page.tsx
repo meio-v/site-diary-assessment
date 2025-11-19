@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { supabaseClient } from '@/lib/supabase'
 import { DiaryForm, type DiarySubmissionData } from '@/components/diary/diary-form'
 import { useDiary } from '@/hooks/use-diary'
+import { revalidateHomePage } from '@/app/actions/revalidate'
 
 export default function EditDiaryPage() {
   const router = useRouter()
@@ -34,6 +35,8 @@ export default function EditDiaryPage() {
       throw new Error(errorMessage)
     }
 
+    // Revalidate the homepage cache to show updated entry
+    await revalidateHomePage()
     router.push(`/diary/${diaryId}`)
   }
 
