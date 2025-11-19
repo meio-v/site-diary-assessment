@@ -20,6 +20,9 @@ interface SiteDiaryWithCounts extends SiteDiary {
   incidentCount: number
 }
 
+// Revalidate the page every 10 seconds to show new entries quickly
+export const revalidate = 10
+
 export default async function Home() {
   const [diariesResult, visitorsResult, equipmentResult, incidentsResult] = await Promise.all([
     supabase

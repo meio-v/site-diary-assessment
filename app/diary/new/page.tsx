@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabaseClient } from '@/lib/supabase'
 import { DiaryForm, type DiarySubmissionData } from '@/components/diary/diary-form'
+import { revalidateHomePage } from '@/app/actions/revalidate'
 
 export default function NewDiaryPage() {
   const router = useRouter()
@@ -38,6 +39,8 @@ export default function NewDiaryPage() {
       throw insertError
     }
 
+    // Revalidate the homepage cache to show the new entry
+    await revalidateHomePage()
     router.push(`/diary/${data.id}`)
   }
 
