@@ -112,7 +112,7 @@ To achieve the schema, the following PostgreSQL tables were generated:
   - Sorting, counting, and grouping was done in memory instead of in the database
   - Revalidation cache for the detail pages
 - Branding - Branding was implemented last - globals and themes were edited for a clean, modern aesthetic.
-- Vercel deployment detail - Webpack was favoured over Turbopack because of a Node environment error.
+- Vercel deployment detail - Webpack favored over Turbopack because of a Node environment error. NextJS was bumped down from v16 to v15 to get around this.
 
 ## How I Would Improve The Project (Recommendations)
 
@@ -127,5 +127,6 @@ To achieve the schema, the following PostgreSQL tables were generated:
   - Use Delete Dialog prompts user for critical database deletions
   - Use Diary fetches a diary entry and sets the app diary state
 - Images - For CRUD operations, `useDiaryItems` can handle image metadata (requires an `images` table with `site_diary_id`, `id`, `url`, `created_at`). However, file upload to Supabase Storage is a separate concern that needs additional implementation (using `supabase.storage.from('bucket').upload()`). UI-wise, a simple image dropzone/drag-and-drop component can be implemented.
+- PageSpeed insights - Tools like pagespeed insights have not been used on the project yet so could use an iteration.
 - Logo and favicon was generated via AI - a high quality SVG would be better
 - **Stretch Goals** - I am a fan of how [DailyBean](https://play.google.com/store/apps/details?id=com.bluesignum.bluediary) structures their entries. The main list is a calendar view and clicking a calendar entry pulls up its card and link to the view page near the bottom.
