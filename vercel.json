@@ -1,5 +1,5 @@
 {
-  "buildCommand": "NEXT_PRIVATE_SKIP_TURBO=1 next build",
+  "buildCommand": "next build",
   "framework": "nextjs",
   "installCommand": "npm install"
 }
