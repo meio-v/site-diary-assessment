@@ -1,5 +1,8 @@
 import { notFound } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { format } from 'date-fns'
+import Link from 'next/link'
+
+import { fetchDiaryData } from '@/app/actions/fetchDiaryData'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -8,8 +11,6 @@ import { VisitorsList } from '@/components/lists/visitors-list'
 import { EquipmentList } from '@/components/lists/equipment-list'
 import { IncidentsList } from '@/components/lists/incidents-list'
 import { Users, AlertTriangle } from 'lucide-react'
-import { format } from 'date-fns'
-import Link from 'next/link'
 import type { Visitor, ResourceUtilizationWithResource, Incident } from '@/types/diary'
 
 interface PageProps {
@@ -24,41 +25,21 @@ export default async function DiaryPage({ params }: PageProps) {
     notFound()
   }
 
-  // Fetch all data in parallel
-  const [diaryResult, visitorsResult, equipmentResult, incidentsResult] = await Promise.all([
-    supabase
-      .from('site_diaries')
-      .select('*')
-      .eq('id', diaryId)
-      .single(),
-    supabase
-      .from('visitors')
-      .select('*')
-      .eq('site_diary_id', diaryId)
-      .order('created_at', { ascending: false }),
-    supabase
-      .from('resource_utilization')
-      .select(`
-        *,
-        resource:resources(*)
-      `)
-      .eq('site_diary_id', diaryId)
-      .order('created_at', { ascending: false }),
-    supabase
-      .from('incidents')
-      .select('*')
-      .eq('site_diary_id', diaryId)
-      .order('created_at', { ascending: false })
-  ])
+  const { 
+    diaries: diaryResult,
+    visitors: visitorsResult,
+    resourceUtilization: equipmentResult,
+    incidents: incidentsResult
+  } = await fetchDiaryData(diaryId)
 
   if (diaryResult.error || !diaryResult.data) {
     notFound()
   }
-
-  const diary = diaryResult.data
-  const visitors = visitorsResult.data || []
-  const equipment = equipmentResult.data || []
-  const incidents = incidentsResult.data || []
+  
+  const diary = diaryResult.data[0]
+  const visitors = visitorsResult.data
+  const equipment = equipmentResult.data
+  const incidents = incidentsResult.data
   const visitorCount = visitors.length
   const incidentCount = incidents.length
 

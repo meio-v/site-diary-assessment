@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { supabaseClient } from '@/lib/supabase'
+import { toast } from 'sonner'
 import { DiaryForm, type DiarySubmissionData } from '@/components/diary/diary-form'
 import { useDiary } from '@/hooks/use-diary'
+import { updateDiaryEntry } from '@/app/actions/updateDiaryEntry'
 import { revalidateHomePage } from '@/app/actions/revalidate'
 
 export default function EditDiaryPage() {
@@ -18,26 +19,20 @@ export default function EditDiaryPage() {
   const handleSubmit = async (formData: DiarySubmissionData) => {
     setError(null)
 
-    const { error } = await supabaseClient
-      .from('site_diaries')
-      .update({
-        date: formData.date,
-        description: formData.description,
-        weather: formData.weather,
-        temperature: formData.temperature,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', diaryId)
-
-    if (error) {
-      const errorMessage = error.message || 'Failed to save changes. Please try again.'
+    try {
+      await updateDiaryEntry(diaryId, formData)
+      
+      // Revalidate the homepage cache to show updated entry
+      await revalidateHomePage()
+      toast.success('Diary entry updated successfully')
+      router.push(`/diary/${diaryId}`)
+    } catch (err) {
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : 'Failed to save changes. Please try again.'
       setError(errorMessage)
-      throw new Error(errorMessage)
+      throw err
     }
-
-    // Revalidate the homepage cache to show updated entry
-    await revalidateHomePage()
-    router.push(`/diary/${diaryId}`)
   }
 
   if (loading) {

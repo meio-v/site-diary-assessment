@@ -1,7 +1,7 @@
-import { supabase } from '@/lib/supabase'
 import { DiaryCard } from '@/components/diary/diary-card'
 import type { SiteDiary } from '@/types/diary'
-import { buildDiaryCardProps as buildDiaryCardProps, fetchDiaryData } from './data/fetchDiaryData'
+import { fetchDiaryData } from '@/app/actions/fetchDiaryData'
+import { buildDiaryCardProps } from '@/app/utils/buildDiaryCardProps'
 
 export const revalidate = 10
 
@@ -53,7 +53,6 @@ export default async function Home() {
   })
 
   const heroDescriptionText = `Stay on top of visitors, equipment, and incidents across ${diaries.length} tracked day${diaries.length === 1 ? '' : 's'}.`
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 mb-4">

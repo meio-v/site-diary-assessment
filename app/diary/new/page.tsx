@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { supabaseClient } from '@/lib/supabase'
 import { DiaryForm, type DiarySubmissionData } from '@/components/diary/diary-form'
 import { revalidateHomePage } from '@/app/actions/revalidate'
@@ -41,6 +42,7 @@ export default function NewDiaryPage() {
 
     // Revalidate the homepage cache to show the new entry
     await revalidateHomePage()
+    toast.success('Diary entry created successfully')
     router.push(`/diary/${data.id}`)
   }
 
