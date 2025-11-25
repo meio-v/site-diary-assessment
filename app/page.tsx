@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import { DiaryCard } from '@/components/diary/diary-card'
 import type { SiteDiary } from '@/types/diary'
+import { buildDiaryCardProps as buildDiaryCardProps, fetchDiaryData } from './data/fetchDiaryData'
 
 interface VisitorCount {
   site_diary_id: number
@@ -23,69 +24,52 @@ interface SiteDiaryWithCounts extends SiteDiary {
 // Revalidate the page every 10 seconds to show new entries quickly
 export const revalidate = 10
 
+function DiaryLoadingError() {
+  return (
+    <div className="text-center py-12">
+      <p className="text-destructive">Error loading diary entries. Please try again later.</p>
+    </div>
+  )
+}
+
+function NoDiaryEntries() {
+  return (
+    <div className="text-center py-12">
+      <p className="text-muted-foreground mb-4">No diary entries yet.</p>
+      <p className="text-sm text-muted-foreground">
+        Create your first entry to get started.
+      </p>
+    </div>
+  )
+}
+
 export default async function Home() {
-  const [diariesResult, visitorsResult, equipmentResult, incidentsResult] = await Promise.all([
-    supabase
-      .from('site_diaries')
-      .select('*')
-      .order('date', { ascending: false }),
-    supabase
-      .from('visitors')
-      .select('site_diary_id'),
-    supabase
-      .from('resource_utilization')
-      .select('site_diary_id'),
-    supabase
-      .from('incidents')
-      .select('site_diary_id')
-  ])
+  const { 
+    diaries: diariesResult, 
+    visitors: visitorsResult, 
+    resourceUtilization: equipmentResult, 
+    incidents: incidentsResult 
+  } = await fetchDiaryData()
 
   if (diariesResult.error) {
     console.error('Error fetching diaries:', diariesResult.error)
-    return (
-      <div className="text-center py-12">
-        <p className="text-destructive">Error loading diary entries. Please try again later.</p>
-      </div>
-    )
+    return <DiaryLoadingError />
   }
 
   const diaries: SiteDiary[] = diariesResult.data || []
 
   if (diaries.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground mb-4">No diary entries yet.</p>
-        <p className="text-sm text-muted-foreground">
-          Create your first entry to get started.
-        </p>
-      </div>
+      <NoDiaryEntries />
     )
   }
 
-  const visitorCounts = new Map<number, number>()
-  ;(visitorsResult.data as VisitorCount[] | null)?.forEach(visitor => {
-    const count = visitorCounts.get(visitor.site_diary_id) || 0
-    visitorCounts.set(visitor.site_diary_id, count + 1)
+  const diaryCardProps = buildDiaryCardProps({
+    diaries: diariesResult,
+    visitors: visitorsResult,
+    resourceUtilization: equipmentResult,
+    incidents: incidentsResult
   })
-
-  const equipmentCounts = new Map<number, number>()
-  ;(equipmentResult.data as EquipmentCount[] | null)?.forEach(equipment => {
-    const count = equipmentCounts.get(equipment.site_diary_id) || 0
-    equipmentCounts.set(equipment.site_diary_id, count + 1)
-  })
-
-  const incidentCounts = new Map<number, number>()
-  ;(incidentsResult.data as IncidentCount[] | null)?.forEach(incident => {
-    const count = incidentCounts.get(incident.site_diary_id) || 0
-    incidentCounts.set(incident.site_diary_id, count + 1)
-  })
-
-  const diariesWithCounts: SiteDiaryWithCounts[] = diaries.map(diary => ({
-    ...diary,
-    visitorCount: visitorCounts.get(diary.id) || 0,
-    equipmentCount: equipmentCounts.get(diary.id) || 0,
-    incidentCount: incidentCounts.get(diary.id) || 0
-  }))
 
   return (
     <div className="space-y-6">
@@ -96,7 +80,7 @@ export default async function Home() {
         </p>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-        {diariesWithCounts.map(diary => (
+        {diaryCardProps.map(diary => (
           <DiaryCard 
             key={diary.id} 
             diary={diary} 
