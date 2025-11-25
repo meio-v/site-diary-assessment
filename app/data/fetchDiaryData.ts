@@ -33,14 +33,6 @@ interface FetchDiaryDataResult {
     incidents: IncidentsResult
 }
 
-export type WithCountsResult<T extends object> = T & { count: number }
-interface FetchDiaryDataWithCounts {
-    diaries: WithCountsResult<DiariesResult>
-    visitors: WithCountsResult<VisitorsResult>
-    incidents: WithCountsResult<IncidentsResult>
-    resourceUtilization: ResourceUtilizationResult
-}
-
 export async function fetchDiaryData(): Promise<FetchDiaryDataResult> {
     const [diariesResult, visitorsResult, resourceUtilizationResult, incidentsResult] = await Promise.all([
         supabase.from('site_diaries').select('*').order('date', { ascending: false }),
